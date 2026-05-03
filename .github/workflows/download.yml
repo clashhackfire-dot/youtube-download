@@ -20,7 +20,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install yt-dlp
-        run: pip install -q -U "yt-dlp[default]"
+        run: |
+          curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
+            -o /usr/local/bin/yt-dlp
+          chmod +x /usr/local/bin/yt-dlp
+          yt-dlp --version
 
       - name: Write cookies file
         env:

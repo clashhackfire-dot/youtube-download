@@ -22,14 +22,14 @@ def is_playlist(url):
 
 
 def yt_dlp_cmd(url, output_template, playlist):
-    # android client bypasses YouTube's JS n-challenge without needing a JS runtime
-    # format fallback chain: prefer 720p mp4, then any 720p, then best available
-    fmt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
+    # android/ios clients bypass YouTube's JS n-challenge without a JS runtime
+    # wide format fallback: 720p → any height → absolute best → worst
+    fmt = "bestvideo[height<=720]+bestaudio/bestvideo+bestaudio/best/worst"
     no_playlist = "" if playlist else "--no-playlist"
     cookies = f'--cookies "{COOKIES_FILE}"' if COOKIES_FILE else ""
     return (
         f'yt-dlp -f "{fmt}" --merge-output-format mp4 '
-        f'--extractor-args "youtube:player_client=android,ios,web" '
+        f'--extractor-args "youtube:player_client=android,ios,tv_embedded,web" '
         f"--write-info-json {no_playlist} {cookies} "
         f'-o "{output_template}" "{url}"'
     )
